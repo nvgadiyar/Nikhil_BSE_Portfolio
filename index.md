@@ -13,7 +13,7 @@ You should comment out all portions of your portfolio that you have not complete
 
 
 ![Headstone Image](61AuoN8XWdL._AC_UF894,1000_QL80_.jpg)
-  
+  <!--
 # Final Milestone
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
@@ -51,7 +51,7 @@ For your first milestone, describe what your project is and how you plan to buil
 - Technical progress you've made so far
 - Challenges you're facing and solving in your future milestones
 - What your plan is to complete your project
-
+-->
 # Starter Project
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
@@ -85,10 +85,10 @@ Don't forget to place the link of where to buy each component inside the quotati
 
 | **Part** | **Note** | **Price** | **Link** |
 |:--:|:--:|:--:|:--:|
+| ESP32 | Microcontroller | $9.99 | <a href="https://www.amazon.com/HiLetgo-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0718T232Z/ref=sr_1_2_sspa?dib=eyJ2IjoiMSJ9.XBINg-sjhfF_gUtnMiKGjk-Cz998LZHcErnfMs35F-D1UBTQK0-lGM-qH6ZcD8355cFxkVk9DmW5LzbBSZW_JUFJJM1mJ1WCKzY5PHdZadqvVYK1ZcdaE3gZRaJWI9yhfhQjvrV_bU3UFxs5nre2LDjLD_w8XI4NndkxNKxSg7GiTVHrLYkao8OovfhPK-5JWRhxCx9qaof23bUI9GDWF2YuvWSYm7x1TQ1HKNrQ8Hs.O7oZEpnOTKWX2Bf_X5HJU8sGsDOaEkQidMod-rnwEmE&dib_tag=se&keywords=ESP32&qid=1782403894&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1"> Link </a> |
+| Adafruit LSM6DS3TR + LIS3MDI | Accelerometer, gyroscope, magnetometer all in one| $16.00 | <a href="https://www.amazon.com/NebulaGo-1pcs-LSM6DS3TR-C-LSM6DS3TR-Sensor/dp/B0GZKTJHH9/ref=sr_1_2?crid=UT0UTEB5Y1K8&dib=eyJ2IjoiMSJ9.ObybggRZITOBjOSSbvHpapXa-qIxX5fT1GuqmfBi8HzFfvaBo0bDRpTHwO0hKZHdEKnVwO4OcSqk_qtGU7ipP2Clo2Y-E67AEkn_QVLCV4DLZkOyb-w8jQiEdp0C4y4X58Z2F67nBJ_oN1m4ZP2N7NXOGGL0nHcgNPv51SHaduHsWU_dhEDieV3t5wJWtFwIrbEjrraKuB6n5C_595-D7MmXJpX4re_L6O2KlPYb9R0.ka4QfqfVW1VYb_hkczvbr3qMv-em8Q61mJEm5JnHLDo&dib_tag=se&keywords=adafruit+lsm6ds3tr&qid=1782404026&sprefix=adafruit+lsm6ds3%2Caps%2C222&sr=8-2"> Link </a> |
+| Breadboard | To build electronic circuits | $8.99 | <a href="[https://www.amazon.com/Arduino-A000066-ARDUINO-UNO-R3/dp/B008GRTSV6/](https://www.amazon.com/EL-CP-003-Breadboard-Solderless-Distribution-Connecting/dp/B01EV6LJ7G/ref=sr_1_4?crid=1WNXN8N29ULMV&dib=eyJ2IjoiMSJ9.eV9nARvK2S1_-r45I8kSDw-6sDNnN2BV6ymYerOMBRETjogMKB7zIo8u_TUoaq3Nf4BWLGXY_VfIsjEj56XIYwFArjMqg5_XXl4fWqPWE2DQln3CyZGrGkLzT52Zt1u8Beazlk9iVA8syNZwD3qcDQEfSANeqIIdGQHHd9wkf33m-3Yy3jVTgwQ0rsP4p-w1LLJdjURUoKgTluD3QTX2QY1C54aDwhm2zF8J9aQAXcg.73CPJ0vHuiyuG6z-Rsx8uxTXFq4mv1VEHVMPtWm37OE&dib_tag=se&keywords=breadboard&qid=1782404174&sprefix=bread%2Caps%2C629&sr=8-4)"> Link </a> |
 | Item Name | What the item is used for | $Price | <a href="https://www.amazon.com/Arduino-A000066-ARDUINO-UNO-R3/dp/B008GRTSV6/"> Link </a> |
-| Item Name | What the item is used for | $Price | <a href="https://www.amazon.com/Arduino-A000066-ARDUINO-UNO-R3/dp/B008GRTSV6/"> Link </a> |
-| Item Name | What the item is used for | $Price | <a href="https://www.amazon.com/Arduino-A000066-ARDUINO-UNO-R3/dp/B008GRTSV6/"> Link </a> |
-
 
 
 # Other Resources/Examples
