@@ -1,5 +1,5 @@
 # Knee Rehabilitation Device
-Knee brace that informs the user of improper squat form and gives extra help on the squat. For example, it will count squats, give a wall-sit timer, and let the user know if they go past 90 degrees. When performing a workout, the user may not be fully aware of what they look like, making this device useful. lkh;oiihgvefwwef
+Knee brace that informs the user of improper squat form and gives extra help on the squat. For example, it will count squats, give a wall-sit timer, and let the user know if they go past 90 degrees. When performing a workout, the user may not be fully aware of what they look like, making this device useful. lkh;oiihgvefwwefweaefawe
 
 You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
 ```HTML 
