@@ -13,7 +13,7 @@ You should comment out all portions of your portfolio that you have not complete
 
 
 ![Headstone Image](61AuoN8XWdL._AC_UF894,1000_QL80_.jpg)
-  ```c++
+
 # Final Milestone
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
@@ -51,7 +51,7 @@ For your first milestone, describe what your project is and how you plan to buil
 - Technical progress you've made so far
 - Challenges you're facing and solving in your future milestones
 - What your plan is to complete your project
-```
+
 # Starter Project
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
