@@ -1,5 +1,5 @@
 # Knee Rehabilitation Device
-Knee brace that informs the user of improper squat form and gives extra help on the squat. For example, it will count squats, give a wall-sit timer, and let the user know if they go past 90 degrees. When performing a workout, the user may not be fully aware of what they look like, making this device useful.
+Knee brace that informs the user of improper squat form and gives extra help on the squat. For example, it will alert the user if they don't control their squat, alert the user if their knee caves in, and let the user know if they go past 90 degrees. When performing a workout, the user may not be fully aware of what they look like, making this device useful.
 
 You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
 ```HTML 
@@ -9,46 +9,30 @@ You should comment out all portions of your portfolio that you have not complete
 
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
-| Nikhil G | Leland High School | Electrical Engineering | Incoming Senior
+| Nikhil G | Leland High School | Computer Engineering | Incoming Senior
 
 
 ![Headstone Image](61AuoN8XWdL._AC_UF894,1000_QL80_.jpg)
 
 # Final Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7Z7q9Cq5LfI?si=db1NKK2zv_Yjijyu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-
-For your final milestone, explain the outcome of your project. Key details to include are:
-- What you've accomplished since your previous milestone
-- What your biggest challenges and triumphs were at BSE
-- A summary of key topics you learned about
-- What you hope to learn in the future after everything you've learned at BSE
-
-
+My final milestone was kind of just to wrap everything up. I was able to overcome some challenges I already had and I was able to make my project work a lot better. For example, I sewed the flex sensor holders onto the brace. Sewing was a challenge because each stitch had to go through the knee brace and the holders. I also fixed a problem that I had with the accelerometer in the adafruit sensor. The accelerometer detects how gravity acts on it based on the orientation of it. The problem with this is that if the accelerometer was just a little bit disoriented while squatting, the gravity detection would change drastically, sounding the buzzer at an insane rate. I solved this problem by taking the change in values. If there was a large difference between two readings, then that would trigger the buzzer. At Bluestamp Engineering, I have learned a lot about microcontrollers, C++, circuits, even sewing. Some of my biggest challenges here were getting the flex sensor to work and trying to get consistent readings from the sensors. On the other hand, my biggest triumphs include using the magnetometer to detect improper form and calculating the spike in the accelerometer readings. In the future, I hope to learn more about how microcontrollers and electronic circuits can be implemented in biotechnology. 
 
 # Second Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZlVJFeh6kQg?si=1B_zMx7I6vvsz52L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For your second milestone, explain what you've worked on since your previous milestone. You can highlight:
-- Technical details of what you've accomplished and how they contribute to the final goal
-- What has been surprising about the project so far
-- Previous challenges you faced that you overcame
-- What needs to be completed before your final milestone 
+
+With the completion of milestone 2, I have successfully integrated the adafruit sensor into my project. The hardest challenge about this project is the accuracy of the sensors. If I don't get consistent and accurate readings, it is hard to make the project consistent. The adafruit sensor and the flex sensor have both given me these challenges. I realized I could get a much more accurate knee caving warning if I put a magnet on my left knee and used the adafruit's magnetometer. This would measure the magnetic field strength and would beep a buzzer when strength got really high. I also used the adafruit's accelerometer. This would give warnings when the user's squat was not controlled. A previous challenge that I faced that I solved was how I was going to stick the flex sensor on to the knee brace. I decided to use two straw like wire holders that let the flex sensor slide between them and stuck them on with double sided tape. For part of my third milestone, I plan to sew them on. What is surprising about this project, is that I did not think I could do anything like this until now.
 
 # First Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
-
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Xit3S94SjW4?si=HXW0kqBgXBtLGmoq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-For your first milestone, describe what your project is and how you plan to build it. You can include:
-- An explanation about the different components of your project and how they will all integrate together
-- Technical progress you've made so far
-- Challenges you're facing and solving in your future milestones
-- What your plan is to complete your project
+For my first milestone, I focused on using the flex sensor to detect when the user is squatting. I integrated a piezoeletric buzzer with my flex sensor so the user could be alerted at certain times. I decided to use the values from the flex sensor to create two specific portions of a squat. If the user performs a perfect 90 degree squat, the buzzer will beep at the same rate the whole way through. If the user performs a squat that goes below 90 degrees, the buzzer will beep at a rate double what it normally is. Performing a lower squat is not necessarily harmful, so the buzzer just acts as a warning in this scenario. A challenge I am currently facing is how my flex sensor should stick on the knee brace. I am using tape right now, but the tape does not stick well enough to the brace without getting ripped off. The other important component in my project is the adafruit sensor, or the sensor that combines a magnetometer, gyroscope, and accelerometer into one. I plan to use it to detect improper form. 
 
 # Starter Project
 
