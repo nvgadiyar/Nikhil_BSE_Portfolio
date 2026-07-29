@@ -24,8 +24,6 @@ My final milestone was kind of just to wrap everything up. I was able to overcom
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZlVJFeh6kQg?si=1B_zMx7I6vvsz52L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-For your second milestone, explain what you've worked on since your previous milestone. You can highlight:
-
 With the completion of milestone 2, I have successfully integrated the adafruit sensor into my project. The hardest challenge about this project is the accuracy of the sensors. If I don't get consistent and accurate readings, it is hard to make the project consistent. The adafruit sensor and the flex sensor have both given me these challenges. I realized I could get a much more accurate knee caving warning if I put a magnet on my left knee and used the adafruit's magnetometer. This would measure the magnetic field strength and would beep a buzzer when strength got really high. I also used the adafruit's accelerometer. This would give warnings when the user's squat was not controlled. A previous challenge that I faced that I solved was how I was going to stick the flex sensor on to the knee brace. I decided to use two straw like wire holders that let the flex sensor slide between them and stuck them on with double sided tape. For part of my third milestone, I plan to sew them on. What is surprising about this project, is that I did not think I could do anything like this until now.
 
 # First Milestone
