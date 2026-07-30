@@ -39,7 +39,6 @@ For my starter project, I chose the jitterbug. It uses a vibration motor, a batt
 # Code
 This is my code for the knee device.
 
-
 ```c++
 #include <BLEDevice.h>
 #include <BLEServer.h>
