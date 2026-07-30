@@ -1,16 +1,11 @@
 # Knee Rehabilitation Device
 Knee brace that informs the user of improper squat form and gives extra help on the squat. For example, it will alert the user if they don't control their squat, alert the user if their knee caves in, and let the user know if they go past 90 degrees. When performing a workout, the user may not be fully aware of what they look like, making this device useful.
 
-You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
-```HTML 
-<!--- This is an HTML comment in Markdown -->
-<!--- Anything between these symbols will not render on the published site -->
-```
-
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
 | Nikhil G | Leland High School | Computer Engineering | Incoming Senior
 
+![Headstone Image](NikhilG.jpg)
 
 ![Headstone Image](61AuoN8XWdL._AC_UF894,1000_QL80_.jpg)
 
