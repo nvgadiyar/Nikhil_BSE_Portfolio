@@ -39,7 +39,7 @@ For my first milestone, I focused on using the flex sensor to detect when the us
 For my starter project, I chose the jitterbug. It uses a vibration motor, a battery, and two LEDs. It jitters when placed on a hard surface but doesn't work as well on a soft one. A challenge I faced when creating this project was soldering the switch too much, and it ended up breaking altogether.
 
 # Schematics 
-![Headstone Image](circuit_image(1).png)
+![Headstone Image](circuitimage.png)
 
 # Code
 Here's where you'll put your code. The syntax below places it into a block of code. Follow the guide [here]([url](https://www.markdownguide.org/extended-syntax/)) to learn how to customize it to your project needs. 
