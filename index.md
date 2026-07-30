@@ -37,19 +37,363 @@ For my starter project, I chose the jitterbug. It uses a vibration motor, a batt
 ![Headstone Image](circuitimage.png)
 
 # Code
-Here's where you'll put your code. The syntax below places it into a block of code. Follow the guide [here]([url](https://www.markdownguide.org/extended-syntax/)) to learn how to customize it to your project needs. 
+This is my code for the knee device.
 
 
 ```c++
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+#include <Wire.h>
+#include <Adafruit_LSM6DS3TRC.h>
+#include <Adafruit_LIS3MDL.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// --- OLED Display Configuration ---
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+#define SCREEN_ADDRESS 0x3C
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+bool displayAvailable = false;
+
+// --- BLE Nordic UART Service (NUS) UUIDs ---
+#define SERVICE_UUID  "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
+#define CHAR_UUID_TX  "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
+#define CHAR_UUID_RX  "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+
+// --- Device Pins ---
+#define BUZZER_PIN 4        // Buzzer for IMU/Mag form alerts
+const int buzzerPin = 23;   // Buzzer for flex sensor depth pacing
+const int flexsensor = 15;  // Flex sensor analog pin
+
+// --- Rehab Thresholds (IMU / Mag) ---
+#define ACCEL_SPIKE_THRESHOLD 2.5     // Triggers ONLY if acceleration jumps suddenly between readings
+#define TEMPO_ROTATION_THRESHOLD 2.5  // Gyro Z speed limit
+
+float baselineMagnet = 0.0;           
+float magnetThreshold = 0.0;          
+
+// Variable to store previous acceleration magnitude for delta tracking
+float lastCombinedAccel = 0.0;
+
+Adafruit_LSM6DS3TRC lsm6ds;
+Adafruit_LIS3MDL lis3mdl;
+
+// --- Flex Sensor Dynamic Calibration Variables ---
+int straightValue = 1850; // Will be auto-calibrated
+int ninetyDegrees = 1565; // Calculated dynamically from straightValue
+
+// --- Squat Counter Variables ---
+int squatCount = 0;
+bool isSquatting = false;
+
+unsigned long lastBeepTime = 0;
+bool buzzerState = false;
+
+// --- BLE Globals ---
+BLEServer *pServer = nullptr;
+BLECharacteristic *pTxCharacteristic = nullptr;
+bool deviceConnected = false;
+
+// --- Helper Function: Update OLED Display ---
+void updateDisplay(int count) {
+  if (!displayAvailable) return;
+
+  display.clearDisplay();
+  display.drawRect(0, 0, 128, 64, SSD1306_WHITE);
+
+  // Label
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(28, 10);
+  display.println(F("SQUAT COUNT"));
+
+  // Big Counter Text
+  display.setTextSize(3);
+  
+  // Center alignment offset calculation based on digits
+  int xPos = 52;
+  if (count >= 100) xPos = 38;
+  else if (count >= 10) xPos = 45;
+
+  display.setCursor(xPos, 30);
+  display.println(count);
+
+  display.display();
+}
+
+// --- Helper Function: Send log to BOTH Serial Monitor and BLE UART ---
+void sendLog(String msg) {
+  Serial.println(msg);
+  if (deviceConnected && pTxCharacteristic != nullptr) {
+    String bleMsg = msg + "\n";
+    pTxCharacteristic->setValue(bleMsg.c_str());
+    pTxCharacteristic->notify();
+  }
+}
+
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer *pServer) override {
+    deviceConnected = true;
+    Serial.println("Device connected via BLE");
+  }
+
+  void onDisconnect(BLEServer *pServer) override {
+    deviceConnected = false;
+    Serial.println("Device disconnected from BLE");
+    pServer->getAdvertising()->start();
+  }
+};
+
+class MyRxCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *pCharacteristic) override {
+    String rxValue = pCharacteristic->getValue();
+    if (rxValue.length() > 0) {
+      Serial.print("BLE Received: ");
+      Serial.println(rxValue);
+    }
+  }
+};
+
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  Serial.println("Hello World!");
+  Serial.begin(115200);
+  while (!Serial) delay(10);
+
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW); 
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(flexsensor, INPUT);
+
+  Wire.begin(21, 22);  // SDA, SCL for ESP32
+
+  // --- Initialize OLED Screen ---
+  if (display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    displayAvailable = true;
+    updateDisplay(0);
+  } else {
+    Serial.println(F("SSD1306 OLED allocation failed!"));
+  }
+
+  // --- Initialize Sensors ---
+  if (!lsm6ds.begin_I2C()) {
+    Serial.println("LSM6DS3TR-C not found!");
+    while (1) delay(10);
+  }
+  
+  if (!lis3mdl.begin_I2C()) {
+    Serial.println("LIS3MDL not found!");
+    while (1) delay(10);
+  }
+
+  lis3mdl.setRange(LIS3MDL_RANGE_4_GAUSS); 
+  lis3mdl.setDataRate(LIS3MDL_DATARATE_40_HZ);
+
+  // --- Initialize BLE ---
+  BLEDevice::init("ESP32 UART");
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+
+  pTxCharacteristic = pService->createCharacteristic(
+                        CHAR_UUID_TX,
+                        BLECharacteristic::PROPERTY_NOTIFY);
+  pTxCharacteristic->addDescriptor(new BLE2902());
+
+  BLECharacteristic *pRxCharacteristic = pService->createCharacteristic(
+                        CHAR_UUID_RX,
+                        BLECharacteristic::PROPERTY_WRITE);
+  pRxCharacteristic->setCallbacks(new MyRxCallbacks());
+
+  pService->start();
+  pServer->getAdvertising()->addServiceUUID(SERVICE_UUID);
+  pServer->getAdvertising()->start();
+  
+  sendLog("BLE UART service started, waiting for connection...");
+
+  // =========================================================================
+  // --- 5-Second Magnetometer Calibration Sequence ---
+  // =========================================================================
+  sendLog("===========================================");
+  sendLog("CALIBRATION STARTING IN 2 SECONDS...");
+  sendLog("STAND STILL WITH KNEES STRAIGHT!");
+  sendLog("===========================================");
+  delay(2000);
+
+  float totalMagSample = 0.0;
+  int sampleCount = 50; 
+
+  for (int i = 0; i < sampleCount; i++) {
+    sensors_event_t mag_event;
+    lis3mdl.getEvent(&mag_event);
+    
+    float magX = mag_event.magnetic.x;
+    float magY = mag_event.magnetic.y;
+    float magZ = mag_event.magnetic.z;
+    totalMagSample += sqrt(magX * magX + magY * magY + magZ * magZ);
+    
+    if (i % 10 == 0) {
+      digitalWrite(BUZZER_PIN, HIGH);
+      delay(20);
+      digitalWrite(BUZZER_PIN, LOW);
+    }
+    
+    delay(100);
+  }
+
+  baselineMagnet = totalMagSample / sampleCount;
+  magnetThreshold = baselineMagnet + 15.0; 
+
+  // Initialize baseline acceleration
+  sensors_event_t accel, gyro, temp;
+  lsm6ds.getEvent(&accel, &gyro, &temp);
+  lastCombinedAccel = sqrt(accel.acceleration.y * accel.acceleration.y + accel.acceleration.z * accel.acceleration.z);
+
+  sendLog("--- IMU/MAG CALIBRATION COMPLETE ---");
+  sendLog("Baseline Magnet Strength: " + String(baselineMagnet) + " uT");
+  sendLog("Target Beep Threshold: " + String(magnetThreshold) + " uT");
+  sendLog("===========================================");
+
+  // =========================================================================
+  // --- 5-Second Flex Sensor Calibration Sequence ---
+  // =========================================================================
+  sendLog("Starting 5-second flex sensor calibration...");
+  sendLog("Please hold your leg STRAIGHT and still!");
+
+  for (int i = 0; i < 3; i++) {
+    tone(buzzerPin, 1500);
+    delay(100);
+    noTone(buzzerPin);
+    delay(100);
+  }
+
+  unsigned long startCalibration = millis();
+  long totalReading = 0;
+  int readingCount = 0;
+
+  while (millis() - startCalibration < 5000) {
+    totalReading += analogRead(flexsensor);
+    readingCount++;
+    delay(20);
+  }
+
+  if (readingCount > 0) {
+    straightValue = totalReading / readingCount;
+    ninetyDegrees = straightValue - 250; 
+  }
+
+  tone(buzzerPin, 2000);
+  delay(500);
+  noTone(buzzerPin);
+
+  sendLog("Flex Calibration complete!");
+  sendLog("Calibrated Straight Value: " + String(straightValue));
+  sendLog("Calculated 90 Degrees Value: " + String(ninetyDegrees));
+  sendLog("===========================================");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // --- Read IMU & Magnetometer Sensors ---
+  sensors_event_t accel, gyro, temp;
+  lsm6ds.getEvent(&accel, &gyro, &temp);
 
+  sensors_event_t mag_event;
+  lis3mdl.getEvent(&mag_event);
+
+  bool badFormDetected = false;
+
+  // --- 1. Magnetometer ---
+  float magX = mag_event.magnetic.x;
+  float magY = mag_event.magnetic.y;
+  float magZ = mag_event.magnetic.z;
+  float magnitude = sqrt(magX * magX + magY * magY + magZ * magZ);
+
+  if (magnitude > magnetThreshold) {
+    sendLog("--- WARNING: Knees Caving In (Magnetometer)! ---");
+    badFormDetected = true;
+  }
+
+  // --- 2. Accelerometer: Spike-Only Detection ---
+  float currentCombinedAccel = sqrt(accel.acceleration.y * accel.acceleration.y + 
+                                    accel.acceleration.z * accel.acceleration.z);
+
+  float accelDelta = abs(currentCombinedAccel - lastCombinedAccel);
+
+  if (accelDelta > ACCEL_SPIKE_THRESHOLD) {
+    sendLog("--- WARNING: Fast Drop Spike Detected! ---");
+    badFormDetected = true;
+  }
+
+  lastCombinedAccel = currentCombinedAccel;
+
+  // --- 3. Gyroscope: Backup Tempo Control ---
+  if (abs(gyro.gyro.z) > TEMPO_ROTATION_THRESHOLD) {
+    sendLog("--- WARNING: Moving Too Fast! ---");
+    badFormDetected = true;
+  }
+
+  // --- IMU Action Window ---
+  if (badFormDetected) {
+    digitalWrite(BUZZER_PIN, HIGH); 
+    delay(100);                      
+    digitalWrite(BUZZER_PIN, LOW);   
+  }
+
+  // --- Send Telemetry Data to Serial Monitor and BLE ---
+  String imuLog = "Mag: " + String(magnitude) + " uT | Accel Delta (Spike): " + 
+                   String(accelDelta) + " | Accel Total: " + String(currentCombinedAccel);
+  sendLog(imuLog);
+
+  // --- 4. Flex Sensor & Squat Counter Logic ---
+  int value = analogRead(flexsensor);
+  sendLog("Flex Sensor: " + String(value));
+
+  // Thresholds for detecting flex (down) and returning (up)
+  int flexDownThreshold = straightValue - 150; // Knee is bending downwards
+  int flexUpThreshold = straightValue - 50;    // Knee returned near straight position
+
+  // State Machine logic to count reps safely without false double-counts
+  if (!isSquatting && value < flexDownThreshold) {
+    isSquatting = true; 
+  } else if (isSquatting && value > flexUpThreshold) {
+    isSquatting = false;
+    squatCount++;
+    updateDisplay(squatCount);
+    sendLog("Squat Completed! Total: " + String(squatCount));
+  }
+
+  // --- 5. Flex Sensor Depth Pacing Window ---
+  unsigned long currentMillis = millis();
+  int beepInterval = 0;
+
+  if (value < ninetyDegrees) {
+    beepInterval = 150; 
+  } else if (value >= ninetyDegrees && value <= straightValue + 50) {
+    beepInterval = 600; 
+  } else {
+    noTone(buzzerPin);
+    beepInterval = 0; 
+  }
+
+  if (beepInterval > 0) {
+    if (currentMillis - lastBeepTime >= beepInterval) {
+      lastBeepTime = currentMillis;
+      buzzerState = !buzzerState;
+
+      if (buzzerState) {
+        tone(buzzerPin, 1000);
+      } else {
+        noTone(buzzerPin);
+      }
+    }
+  }
+
+  delay(100); // Loop interval
 }
 ```
 
